@@ -55,7 +55,7 @@ app.post('/adduser', (req, res) => {
 });
 
 // Get the list of all users
-app.get('/api/exercise/users', function(req, res) {
+app.get('/allusers', function(req, res) {
   User.find({}, function(err, users) {
     if(err) return console.log(err);
     
