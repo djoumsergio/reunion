@@ -23,31 +23,43 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
 });
 
+app.get('/members', (req, res) => {
+  res.sendFile(__dirname + '/views/members.html')
+});
+
 var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error'));
 
 var userSchema = new mongoose.Schema({
-  username : String
+  meeting_name : String,
+  session_name: String,
+  session_description: String,
+  date_created: Date 
 });
 
 var User = mongoose.model("User", userSchema);
   
 // End point Create a new user
-app.post('/adduser', (req, res) => {
+app.post('/api/newsession', (req, res) => {
 
-  User.findOne({username: req.body.username}, (err, doc) => {
+  //I ve use the trim to remove empty space after the meeting_name, so "name" will be the same with "name " 
+  let meeting_name = req.body.meeting_name.trim();
+  User.findOne({meeting_name: meeting_name}, (err, doc) => {
     
     if(err) return console.log(err);
-    if(doc) return res.send('username already taken');
+    if(doc) return res.send('Existe deja, Change de nom');
     
     var human = new User({
-      username : req.body.username,
+      meeting_name : meeting_name,
+      session_name: req.body.session_name,
+      session_description: req.body.session_description,
+      date_created: Date(Date.now) 
     });
 
     human.save((err, human) => {
       if(err) return console.log(err); 
-        res.json({"username": human.username, "_id": human.id});
+        res.json(human);
     });
     
   });
@@ -55,7 +67,7 @@ app.post('/adduser', (req, res) => {
 });
 
 // Get the list of all users
-app.get('/allusers', function(req, res) {
+app.get('/api/allsession', function(req, res) {
   User.find({}, function(err, users) {
     if(err) return console.log(err);
     

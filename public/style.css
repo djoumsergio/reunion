@@ -27,15 +27,14 @@ form {
   margin-bottom: 25px;
   padding: 15px;
   border: solid 1px #ccc;
-  display: inline-block;
   width: 100%;
-  max-width: 340px;
+  max-width: 540px;
   border-radius: 5px;
   margin-right: auto;
   margin-left: auto;
 }
 
-input {
+/* input {
   display: block;
   margin-bottom: 10px !important;
   padding: 5px;
@@ -43,19 +42,21 @@ input {
   border: 1px solid lightgrey;
   border-radius: 3px;
   font-size: 16px;
-}
+} */
 
 .mytext{
-  font-align: center;
-  max-width: 340px;
+  text-align: center;
+  max-width: 540px;
   margin-right: auto;
   margin-left: auto;
 }
 
+textarea{
+  margin-bottom: 10px !important;
+}
 code {
   font-family: monospace;
   font-size: 1.2em;
-/*   background-color: #FFFEC4; */
   padding: 2px;
 }
 h1{
@@ -65,14 +66,22 @@ h1{
 .myform{
   display: flex;
   flex-direction: column;
-  max-width: 340px;
+  max-width: 640px;
 }
 p{
-  font-align: center;
+  text-align: center;
 }
 .moment{
-  display: flex;
-  flex-direction: row;
   max-width: 680px;
   margin: 15px auto;
+}
+
+.card {
+  position: relative;
+  background: #eb7070 !important;
+}
+
+.card-1 {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
 }
