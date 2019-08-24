@@ -1,5 +1,4 @@
 const express = require('express');
-const mongo = require('mongodb');
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -35,7 +34,12 @@ var userSchema = new mongoose.Schema({
   meeting_name : String,
   session_name: String,
   session_description: String,
-  date_created: Date 
+  date_created: Date,
+  members: [{ 
+    name: String, 
+    profession: String, 
+    city: String
+  }] 
 });
 
 var User = mongoose.model("User", userSchema);
@@ -63,6 +67,17 @@ app.post('/api/newsession', (req, res) => {
     });
     
   });
+
+});
+
+app.post('/api/adduser', (req, res) => {   
+    
+  {User.findOneAndUpdate({_id: req.body.id}, {$push:{members: { name: req.body.name, profession: req.body.profession, city: req.body.city}}}, {new: true}, (err, doc) => {
+    if (err) return  res.send(err);
+    if(doc) return res.send(doc);
+    if(!doc) return res.send('Reunion inexistante');
+    
+  })}
 
 });
 
