@@ -36,7 +36,7 @@ var userSchema = new mongoose.Schema({
   session_description: String,
   date_created: Date,
   date_rencontre: [Date],   // <---- getting a bit confused with this. meeting frequency, exact date of meeting, last meeting date
-  cautisation_seance: Number, // Cautisation par seance - Ce que chaque membre doit donner par seance
+  cautisation_amount: Number, // Cautisation par seance - Ce que chaque membre doit donner par seance
   members: [{ 
     name: String, 
     profession: String, 
@@ -91,11 +91,10 @@ app.post('/api/newsession', (req, res) => {
 
 app.post('/api/adduser', (req, res) => {   
     
-  {User.findOneAndUpdate({_id: req.body.id}, {$push:{members: { name: req.body.name, profession: req.body.profession, city: req.body.city}}}, {new: true}, (err, doc) => {
+  {User.findOneAndUpdate({_id: req.body.id}, {$push:{members: { name: req.body.name.trim(), profession: req.body.profession.trim(), city: req.body.city.trim()}}}, {new: true}, (err, doc) => {
     if (err) return  res.send(err);
     if(doc) return res.send(doc);
     if(!doc) return res.send('Reunion inexistante');
-    
   })}
 
 });
@@ -105,12 +104,12 @@ app.get('/api/allsession', function(req, res) {
   User.find({}, function(err, users) {
     if(err) return console.log(err);
     
-    var userMap = [];
+    var sessionMap = [];
     users.forEach((el) => {
-      userMap.push({id: el._id, meeting_name: el.meeting_name, date_created: el.date_created});
+      sessionMap.push({id: el._id, meeting_name: el.meeting_name, date_created: el.date_created, members: el.members});
     });
     
-    res.send(userMap);  
+    res.send(sessionMap);  
   });
 });
 
