@@ -31,11 +31,11 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
 
 var userSchema = new mongoose.Schema({
-  meeting_name : String,
+  meeting_name: String,
   session_name: String,
   session_description: String,
   date_created: Date,
-  date_rencontre: [Date],   // <---- getting a bit confure with this. meeting frequency, exact date of meeting, last meeting date
+  date_rencontre: [Date],   // <---- getting a bit confused with this. meeting frequency, exact date of meeting, last meeting date
   cautisation_seance: Number, // Cautisation par seance - Ce que chaque membre doit donner par seance
   members: [{ 
     name: String, 
@@ -106,8 +106,8 @@ app.get('/api/allsession', function(req, res) {
     if(err) return console.log(err);
     
     var userMap = [];
-    users.forEach((element) => {
-      userMap.push({id: element._id, username: element.username});
+    users.forEach((el) => {
+      userMap.push({id: el._id, meeting_name: el.meeting_name, date_created: el.date_created});
     });
     
     res.send(userMap);  
