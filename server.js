@@ -35,11 +35,30 @@ var userSchema = new mongoose.Schema({
   session_name: String,
   session_description: String,
   date_created: Date,
+  date_rencontre: [Date],   // <---- getting a bit confure with this. meeting frequency, exact date of meeting, last meeting date
+  cautisation_seance: Number, // Cautisation par seance - Ce que chaque membre doit donner par seance
   members: [{ 
     name: String, 
     profession: String, 
-    city: String
-  }] 
+    city: String,
+    cautisation: [{ 
+      date: Date,
+      amount: Number
+    }],
+    epargne: [{ 
+      date: Date,
+      amount: Number
+    }],
+    bouffe: { type: Boolean, default: false },  // Pour savoir si ce membre a deja bouffe
+    status: {type: String, default: 'Membre'},  // Peut etre president, secretaire, tresorie...
+    ordre_bouffe: Number, // Position de bouffe [date, position]      <----------------------------------------
+    ordre_reception: Number  // Position de reception  [date, position]    <---------------------------------------
+  }],
+  seances: [{
+    date: Date,
+    presence: [String], //Liste de tous les membres present par seance
+    rapport: String
+  }]
 });
 
 var User = mongoose.model("User", userSchema);
