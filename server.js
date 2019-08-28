@@ -30,7 +30,7 @@ var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error'));
 
-var userSchema = new mongoose.Schema({
+var reunionSchema = new mongoose.Schema({
   meeting_name: String,
   session_name: String,
   session_description: String,
@@ -71,6 +71,19 @@ var userSchema = new mongoose.Schema({
   }]
 });
 
+//This is the collection containing the information about registered users and their session.
+//It is importnat to keep track their session.
+var userSchema = new mongoose.Schema({
+  name: String,
+  password: String,
+  session:[{
+    timestamp: Date,
+    webbrowser: String,
+    location: String
+  }] 
+});
+
+var Reunion = mongoose.model("Reunion", reunionSchema);
 var User = mongoose.model("User", userSchema);
   
 // End point Create a new user
@@ -78,12 +91,12 @@ app.post('/api/newsession', (req, res) => {
 
   //I ve use the trim to remove empty space after the meeting_name, so "name" will be the same with "name " 
   let meeting_name = req.body.meeting_name.trim();
-  User.findOne({meeting_name: meeting_name}, (err, doc) => {
+  Reunion.findOne({meeting_name: meeting_name}, (err, doc) => {
     
     if(err) return console.log(err);
     if(doc) return res.send('Existe deja, Change de nom');
     
-    var human = new User({
+    var human = new Reunion({
       meeting_name : meeting_name,
       session_name: req.body.session_name,
       session_description: req.body.session_description,
@@ -101,7 +114,7 @@ app.post('/api/newsession', (req, res) => {
 
 app.post('/api/adduser', (req, res) => {   
     
-  {User.findOneAndUpdate({_id: req.body.id}, {$push:{members: { name: req.body.name.trim(), profession: req.body.profession.trim(), 
+  {Reunion.findOneAndUpdate({_id: req.body.id}, {$push:{members: { name: req.body.name.trim(), profession: req.body.profession.trim(), 
       phoneNumber: req.body.phoneNumber.trim(), city: req.body.city.trim()}}}, {new: true}, (err, doc) => {
     if (err) return  res.send(err);
     if(doc) return res.send(doc);
@@ -112,7 +125,7 @@ app.post('/api/adduser', (req, res) => {
 
 // Get the list of all users
 app.get('/api/allsession', function(req, res) {
-  User.find({}, function(err, users) {
+  Reunion.find({}, function(err, users) {
     if(err) return console.log(err);
     
     var sessionMap = [];
