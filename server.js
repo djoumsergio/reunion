@@ -43,6 +43,10 @@ app.get('/login', (req, res) => {
   res.sendFile(__dirname + '/views/login.html')
 });
 
+app.get('/testApp', (req, res) => {
+  res.sendFile(__dirname + '/views/index.html')
+});
+
 var db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'connection error'));
