@@ -1,4 +1,5 @@
 const express = require('express');
+//const session = require('express-session'); //Manage session
 const app = express();
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
@@ -18,12 +19,28 @@ app.use(bodyParser.json());
 
 app.use(express.static('public'));
 
+
+//First check the current session and decide upon whether the request should be routed to the index or to
+// the login page.
 app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/index.html')
+  res.sendFile(__dirname + '/views/login.html')
 });
 
 app.get('/members', (req, res) => {
   res.sendFile(__dirname + '/views/members.html')
+});
+
+app.get('/forgot-password', (req, res) => {
+  res.sendFile(__dirname + '/views/forgot-password.html')
+});
+
+app.get('/register', (req, res) => {
+  res.sendFile(__dirname + '/views/register.html')
+});
+
+app.get('/login', (req, res) => {
+  //Check whether there is a user already connected.
+  res.sendFile(__dirname + '/views/login.html')
 });
 
 var db = mongoose.connection;
