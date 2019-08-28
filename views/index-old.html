@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>Tontine | Easy reunion</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+    <link href="style.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+
+  <body>
+    <div class="container">
+
+      <!-- Create a session -->
+      <div class="moment">
+        <form id="testForm" method="post" class="card card-1">
+          <h1>Ajouter Une Session</h1>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="btn btn-dark">Nom de la réunion</span>
+            </div>
+            <input class="form-control" type="text" name="meeting_name" placeholder="Matongo..." required>
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="btn btn-dark">Session</span>
+            </div>
+            <input class="form-control" type="text" name="session_name" placeholder="Session 2019" required>
+          </div>
+          <textarea class="form-control" type="text" name="session_description" placeholder="Description (Réunion des anciens étudiants de la Louve...)" required></textarea>
+          <button type="submit" class="btn btn-primary" style="margin: 0 auto; display: block;">Soumettre</button>
+        </form>
+      </div>
+
+      <!-- Display the json data saved in mongodb -->
+      <div>
+        <hr style="margin: 50px">
+        <code id="jsonResult"></code>
+      </div>
+
+      <!-- Add a member to a tontine-->
+      <div class="moment" id="next">
+        <form id="adduser" class="card card-1">
+          <h1>Ajouter Un membre</h1>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="btn btn-dark">ID de la Reunion</span>
+            </div>
+            <input class="form-control" type="text" name="id" placeholder="_id" required>
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="btn btn-dark">Nom complet</span>
+            </div>
+            <input class="form-control" type="text" name="name" placeholder="Marie Mawamba" required>
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="btn btn-dark">Profession</span>
+            </div>
+            <input class="form-control" type="text" name="profession" placeholder="Etudiant">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="btn btn-dark">Numero de téléphone</span>
+            </div>
+            <input class="form-control" type="text" name="phoneNumber" placeholder="Etudiant">
+          </div>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="btn btn-dark">Ville de residence</span>
+            </div>
+            <input class="form-control" type="text" name="city" placeholder="Paderborn">
+          </div>
+          <button type="submit" class="btn btn-primary" style="margin: 0 auto; display: block;">Soumettre</button>
+        </form>
+      </div>
+
+      <!-- Display the json data saved in mongodb/ list of member -->
+      <!-- <div onchange="list()">
+        <hr style="margin: 50px">
+        <code id="jsonResultmember"></code>
+      </div> -->
+
+      <!-- table listing all meeting participant -->
+      <div style="margin: 10px auto 160px" id="mydp">
+        <table class="table" id="userlist">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Nom</th>
+              <th scope="col">Profession</th>
+              <th scope="col">Phone Number</th>
+              <th scope="col">Ville de residence</th>
+            </tr>
+          </thead>
+          <tbody>
+        </table>
+      </div>
+
+    </div>
+  </body>
+  <script src="https://code.jquery.com/jquery-2.2.1.min.js" integrity="sha256-gvQgAFzTH6trSrAWoH1iPo9Xc96QxSZ3feW6kem+O00=" crossorigin="anonymous"></script>
+  <script>
+    $(function() {
+      $('#testForm').submit(function(e) {
+        $.ajax({
+          url: '/api/newsession',
+          type: 'post',
+          data: $('#testForm').serialize(),
+          success: function(data) {
+            $('#jsonResult').text(JSON.stringify(data));
+          }
+        });
+        e.preventDefault();
+      });
+    })
+    $(function() {
+      var globalMe = true;
+      $('#adduser').submit(function(e) {
+        let list;
+        $.ajax({
+          url: '/api/adduser',
+          type: 'post',
+          data: $('#adduser').serialize(),
+          success: function(data) {
+            list = (data);
+            $('#jsonResultmember').text(JSON.stringify(data));
+          },
+          async: false
+        });
+        e.preventDefault();
+        // console.log(list.members)
+
+        // clean the table to avoir duplicate. But this should be solve. this is just a quick temporary hack
+        document.getElementById('mydp').innerHTML = "";
+        document.getElementById('mydp').innerHTML = `
+          <table class="table" id="userlist">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nom</th>
+                <th scope="col">Profession</th>
+                <th scope="col">Numéro de téléphone</th>
+                <th scope="col">Ville de residence</th>
+              </tr>
+            </thead>
+            <tbody>
+          </table>`;
+
+        // inset the data into the table
+        list.members.map((el, index) => {
+          var table = document.getElementById("userlist");
+          var row = table.insertRow();
+          var cell1 = row.insertCell(0);
+          var cell2 = row.insertCell(1);
+          var cell3 = row.insertCell(2);
+          var cell4 = row.insertCell(3)
+          var cell5 = row.insertCell(4);
+          cell1.innerHTML = index + 1;
+          cell2.innerHTML = el.name;
+          cell3.innerHTML = el.profession;
+          cell4.innerHTML = el.phoneNumber;
+          cell5.innerHTML = el.city;
+        })
+
+
+      });
+    })
+
+    // javascript code that helps list all participants from a session
+  </script>
+
+</html>

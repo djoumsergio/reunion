@@ -31,33 +31,43 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
 
 var userSchema = new mongoose.Schema({
-  meeting_name : String,
+  meeting_name: String,
   session_name: String,
   session_description: String,
   date_created: Date,
-  date_rencontre: [Date],   // <---- getting a bit confure with this. meeting frequency, exact date of meeting, last meeting date
-  cautisation_seance: Number, // Cautisation par seance - Ce que chaque membre doit donner par seance
+  date_rencontre: [Date],   // <---- getting a bit confused with this. meeting frequency, exact date of meeting, last meeting date
+  cautisation_amount: Number, // Cautisation par seance - Ce que chaque membre doit donner par seance
   members: [{ 
     name: String, 
     profession: String, 
     city: String,
-    cautisation: [{ 
-      date: Date,
-      amount: Number
-    }],
-    epargne: [{ 
-      date: Date,
-      amount: Number
-    }],
-    bouffe: { type: Boolean, default: false },  // Pour savoir si ce membre a deja bouffe
-    status: {type: String, default: 'Membre'},  // Peut etre president, secretaire, tresorie...
-    ordre_bouffe: Number, // Position de bouffe [date, position]      <----------------------------------------
-    ordre_reception: Number  // Position de reception  [date, position]    <---------------------------------------
+    phoneNumber: String,
+    epargne: [
+      { 
+        date: Date,
+        amount: Number
+      }
+    ],
+    bouffe: { type: Boolean, default: false },  // Pour savoir si ce membre a deja bouffe (ok)
+    status: String,  // Peut etre president, secretaire, tresorie... SD: fait maintenant reference à l'objet type membre le rendre plus dynamique. 
+    ordre_bouffe: Number, // Position de bouffe [date, position] (ok)
+    ordre_reception: Number  // Position de reception  [date, position] (ok)
   }],
+  typeMembre: [
+    {
+      name : String,
+      description : String
+    }
+  ],
   seances: [{
     date: Date,
-    presence: [String], //Liste de tous les membres present par seance
-    rapport: String
+    presence: [
+      { 
+        personId  : String,
+        aCotise   : { type: Boolean, default: false }
+      }
+    ], //Liste de tous les membres present par seance
+    rapport: String //Fait reference à un lien où le rapport est stocké.
   }]
 });
 
@@ -91,11 +101,11 @@ app.post('/api/newsession', (req, res) => {
 
 app.post('/api/adduser', (req, res) => {   
     
-  {User.findOneAndUpdate({_id: req.body.id}, {$push:{members: { name: req.body.name, profession: req.body.profession, city: req.body.city}}}, {new: true}, (err, doc) => {
+  {User.findOneAndUpdate({_id: req.body.id}, {$push:{members: { name: req.body.name.trim(), profession: req.body.profession.trim(), 
+      phoneNumber: req.body.phoneNumber.trim(), city: req.body.city.trim()}}}, {new: true}, (err, doc) => {
     if (err) return  res.send(err);
     if(doc) return res.send(doc);
     if(!doc) return res.send('Reunion inexistante');
-    
   })}
 
 });
@@ -105,12 +115,12 @@ app.get('/api/allsession', function(req, res) {
   User.find({}, function(err, users) {
     if(err) return console.log(err);
     
-    var userMap = [];
-    users.forEach((element) => {
-      userMap.push({id: element._id, username: element.username});
+    var sessionMap = [];
+    users.forEach((el) => {
+      sessionMap.push({id: el._id, meeting_name: el.meeting_name, date_created: el.date_created, members: el.members});
     });
     
-    res.send(userMap);  
+    res.send(sessionMap);  
   });
 });
 
