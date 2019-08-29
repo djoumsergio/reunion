@@ -1,7 +1,7 @@
 {
   "name": "tontine",
   "version": "0.1.0",
-  "description": "Builbing a web app to manage Camerounian tontines",
+  "description": "Builbing a web app to manage Cameroonian tontines",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -19,7 +19,7 @@
     "node": "6.9.1"
   },
   "repository": {
-    "url": "https://gomix.com/#!/project/welcome-project"
+    "url": ""
   },
   "license": "MIT",
   "keywords": [
