@@ -22,29 +22,14 @@ app.use(express.static('public'));
 
 //First check the current session and decide upon whether the request should be routed to the index or to
 // the login page.
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/views/login.html')
-});
-
-app.get('/forgot-password', (req, res) => {
-  res.sendFile(__dirname + '/views/forgot-password.html')
-});
-
-app.get('/register', (req, res) => {
-  res.sendFile(__dirname + '/views/register.html')
-});
-
-// app.get('/login', (req, res) => {
-//   //Check whether there is a user already connected.
-//   res.sendFile(__dirname + '/views/login.html')
-// });
+app.get('/', (req, res) => {res.sendFile(__dirname + '/views/login.html')});
+app.get('/forgot-password', (req, res) => {res.sendFile(__dirname + '/views/forgot-password.html')});
+app.get('/register', (req, res) => {res.sendFile(__dirname + '/views/register.html')});
+app.get('/404',  (req, res) => {res.sendFile(__dirname + '/views/pages/404.html')});
+app.get('/in', (req, res) => {res.sendFile(__dirname + '/views/dashboard/dashboard.html')});
 
 app.get('/testApp', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
-});
-
-app.get('/in', (req, res) => {
-  res.sendFile(__dirname + '/views/dashboard/dashboard.html')
 });
 
 var db = mongoose.connection;
@@ -141,7 +126,7 @@ app.post('/api/newsession', (req, res) => {
 app.post('/api/adduser', (req, res) => {   
     
   {Reunion.findOneAndUpdate({_id: req.body.id}, {$push:{members: { name: req.body.name.trim(), profession: req.body.profession.trim(), 
-      phoneNumber: req.body.phoneNumber.trim(), city: req.body.city.trim()}}}, {new: true}, (err, doc) => {
+    phoneNumber: req.body.phoneNumber.trim(), city: req.body.city.trim()}}}, {new: true}, (err, doc) => {
     if (err) return  res.send(err);
     if(doc) return res.send(doc);
     if(!doc) return res.send('Reunion inexistante');
@@ -167,16 +152,11 @@ app.get('/api/allsession', function(req, res) {
 
 // Not found middleware
 app.use((req, res, next) => {
-  return next({status: 404, message: 'not found'})
+  // return next({status: 404, message: 'not found'})
   
   // Display the 404 pages when status is 404
-  // res.status(404);
-
-  // // respond with html page
-  // if (req.accepts('html')) {
-  //   res.render('404', { url: '/views/404.html' });
-  //   return;
-  // }
+  res.status(404);
+  res.redirect('/404');
 })
 
 // Error Handling middleware
