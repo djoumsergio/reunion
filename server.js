@@ -26,10 +26,6 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/login.html')
 });
 
-app.get('/members', (req, res) => {
-  res.sendFile(__dirname + '/views/members.html')
-});
-
 app.get('/forgot-password', (req, res) => {
   res.sendFile(__dirname + '/views/forgot-password.html')
 });
@@ -38,13 +34,17 @@ app.get('/register', (req, res) => {
   res.sendFile(__dirname + '/views/register.html')
 });
 
-app.get('/login', (req, res) => {
-  //Check whether there is a user already connected.
-  res.sendFile(__dirname + '/views/login.html')
-});
+// app.get('/login', (req, res) => {
+//   //Check whether there is a user already connected.
+//   res.sendFile(__dirname + '/views/login.html')
+// });
 
 app.get('/testApp', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
+});
+
+app.get('/in', (req, res) => {
+  res.sendFile(__dirname + '/views/dashboard/dashboard.html')
 });
 
 var db = mongoose.connection;
@@ -94,9 +94,13 @@ var reunionSchema = new mongoose.Schema({
 
 //This is the collection containing the information about registered users and their session.
 //It is importnat to keep track their session.
-var userSchema = new mongoose.Schema({
+var adminSchema = new mongoose.Schema({
   name: String,
+  email: String,
   password: String,
+  use_account_status: String,
+  token: String,
+  token_expire: String,
   session:[{
     timestamp: Date,
     webbrowser: String,
@@ -105,12 +109,12 @@ var userSchema = new mongoose.Schema({
 });
 
 var Reunion = mongoose.model("Reunion", reunionSchema);
-var User = mongoose.model("User", userSchema);
+var Admin = mongoose.model("User", adminSchema);
   
-// End point Create a new user
+// End point Create a new Tontine (Session)
 app.post('/api/newsession', (req, res) => {
 
-  //I ve use the trim to remove empty space after the meeting_name, so "name" will be the same with "name " 
+  //I ve use the trim to remove empty space after the meeting_name, so if the user type "name  ", it will trim to "name"
   let meeting_name = req.body.meeting_name.trim();
   Reunion.findOne({meeting_name: meeting_name}, (err, doc) => {
     
@@ -133,6 +137,7 @@ app.post('/api/newsession', (req, res) => {
 
 });
 
+// adding a member to a Tontine (session)
 app.post('/api/adduser', (req, res) => {   
     
   {Reunion.findOneAndUpdate({_id: req.body.id}, {$push:{members: { name: req.body.name.trim(), profession: req.body.profession.trim(), 
@@ -163,6 +168,15 @@ app.get('/api/allsession', function(req, res) {
 // Not found middleware
 app.use((req, res, next) => {
   return next({status: 404, message: 'not found'})
+  
+  // Display the 404 pages when status is 404
+  // res.status(404);
+
+  // // respond with html page
+  // if (req.accepts('html')) {
+  //   res.render('404', { url: '/views/404.html' });
+  //   return;
+  // }
 })
 
 // Error Handling middleware
