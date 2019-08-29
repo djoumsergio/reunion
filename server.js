@@ -26,10 +26,6 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/views/login.html')
 });
 
-app.get('/members', (req, res) => {
-  res.sendFile(__dirname + '/views/members.html')
-});
-
 app.get('/forgot-password', (req, res) => {
   res.sendFile(__dirname + '/views/forgot-password.html')
 });
@@ -38,13 +34,17 @@ app.get('/register', (req, res) => {
   res.sendFile(__dirname + '/views/register.html')
 });
 
-app.get('/login', (req, res) => {
-  //Check whether there is a user already connected.
-  res.sendFile(__dirname + '/views/login.html')
-});
+// app.get('/login', (req, res) => {
+//   //Check whether there is a user already connected.
+//   res.sendFile(__dirname + '/views/login.html')
+// });
 
 app.get('/testApp', (req, res) => {
   res.sendFile(__dirname + '/views/index.html')
+});
+
+app.get('/in', (req, res) => {
+  res.sendFile(__dirname + '/views/dashboard/dashboard.html')
 });
 
 var db = mongoose.connection;
@@ -163,6 +163,15 @@ app.get('/api/allsession', function(req, res) {
 // Not found middleware
 app.use((req, res, next) => {
   return next({status: 404, message: 'not found'})
+  
+  // Display the 404 pages when status is 404
+  // res.status(404);
+
+  // // respond with html page
+  // if (req.accepts('html')) {
+  //   res.render('404', { url: '/views/404.html' });
+  //   return;
+  // }
 })
 
 // Error Handling middleware
