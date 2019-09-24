@@ -12,7 +12,6 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
 
 var Reunion = require('./../schema/reunionschema');
-
   
 // End point Create a new Tontine (Session)
 // adding a member to a Tontine (session)

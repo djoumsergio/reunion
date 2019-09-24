@@ -12,7 +12,6 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-
 //First check the current session and decide upon whether the request should be routed to the index or to
 // the login page.
 app.get('/', (req, res) => {res.sendFile(__dirname + '/views/login.html')});
@@ -27,7 +26,6 @@ app.get('/testApp', (req, res) => {res.sendFile(__dirname + '/views/index.html')
 app.use('/api/newsession', newSession);
 app.use('/api/adduser', addUser);
 app.use('/api/listallsession', listAllSession);
-
 
 // Not found middleware - Display the 404 pages when status is 404
 app.use((req, res, next) => {
