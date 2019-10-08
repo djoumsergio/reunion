@@ -13,7 +13,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error'));
 
 // End point Create a new Tontine (Session)
-app.post('/', (req, res) => {
+router.post('/', (req, res) => {
 
   //I ve use the trim to remove empty space after the meeting_name, so if the user type "name  ", it will trim to "name"
   let meeting_name = req.body.meeting_name.trim();
@@ -31,7 +31,7 @@ app.post('/', (req, res) => {
 
     human.save((err, human) => {
       if(err) return console.log(err); 
-        res.json(human);
+        res.send(human);
     });
     
   });

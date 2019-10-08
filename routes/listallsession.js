@@ -16,7 +16,7 @@ var Reunion = require('./../schema/reunionschema');
 // End point Create a new Tontine (Session)
 // adding a member to a Tontine (session)
 // Get the list of all sessions
-app.get('/', function(req, res) {
+router.get('/', function(req, res) {
     Reunion.find({}, function(err, users) {
       if(err) return console.log(err);
       
