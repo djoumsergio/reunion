@@ -1,10 +1,11 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-var newSession = require('./routes/newsession');
-var addUser = require('./routes/adduser');
-var listAllSession = require('./routes/listallsession')
-
+var registerNewUser = require('./routes/registernewuser');
+var validateUser = require('./routes/validateuser');
+var login = require('./routes/login');
+var newPasswordRequest = require('./routes/newpasswordrequest');
+var newPasswordLink = require('./routes/newpasswordlink');
 const cors = require('cors');
 
 app.use(cors());
@@ -12,20 +13,22 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-//First check the current session and decide upon whether the request should be routed to the index or to
-// the login page.
+// First check the current session and decide upon whether the request should be routed to the index or to
+// The login page.
 app.get('/', (req, res) => {res.sendFile(__dirname + '/views/login.html')});
 app.get('/forgot-password', (req, res) => {res.sendFile(__dirname + '/views/forgot-password.html')});
 app.get('/register', (req, res) => {res.sendFile(__dirname + '/views/register.html')});
 app.get('/404',  (req, res) => {res.sendFile(__dirname + '/views/pages/404.html')});
 app.get('/in', (req, res) => {res.sendFile(__dirname + '/views/dashboard/dashboard.html')});
 
-app.get('/testApp', (req, res) => {res.sendFile(__dirname + '/views/index.html')});
+app.get('/testApp', (req, res) => {res.sendFile(__dirname + '/views/README.html')});
 
 // From the routes folders
-app.use('/api/newsession', newSession);
-app.use('/api/adduser', addUser);
-app.use('/api/listallsession', listAllSession);
+app.use('/api/registernewuser', registerNewUser);
+app.use('/api/validateuser', validateUser);
+app.use('/api/login', login);
+app.use('/api/newpasswordrequest', newPasswordRequest);
+// app.use('/api/newpasswordlink', newPasswordLink); // Need to be well thought through
 
 // Not found middleware - Display the 404 pages when status is 404
 app.use((req, res, next) => {
@@ -48,8 +51,11 @@ app.use((err, req, res, next) => {
     errCode = err.status || 500
     errMessage = err.message || 'Internal Server Error'
   }
-  res.status(errCode).type('txt')
-    .send(errMessage)
+
+  res
+  .status(errCode).type('txt')
+  .send(errMessage)
+
 })
 
 const listener = app.listen(process.env.PORT || 3000, () => {

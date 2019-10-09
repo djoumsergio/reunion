@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>HTML Skeleton</title>
+    <style>
+      input{
+        margin: 8px;
+      }
+    </style>
+    <!-- <link rel="shortcut icon" type="image/png" href="/favicon.png"/> -->
+    <!-- <link rel="stylesheet" href="css/main.css"/> -->
+    <!-- <link rel="icon" href="images/favicon.png"/> -->
+  </head>
+
+  <body>
+    <!-- <script src="js/main.js"></script> -->
+    <div style="width: 200px; margin: 80px auto;">
+    <form action="http://localhost:3000/api/registernewuser" method="post" style="width: 200px">
+      <input name="fname" class="form-control" type="text" placeholder="First name" required>
+      <input name="lname" class="form-control" type="text" placeholder="Last name" required>
+      <input name="email" class="form-control" type="email" placeholder="Email" required>
+      <input name="password" id="password" type="password" class="form-control" placeholder="Password" required>
+      <input id="re_pwd" type="password" class="form-control" placeholder="Re Password" required>
+      <input type="submit" id="register" style="margin: auto; display: block;" class="btn btn-primary" value="Register">
+    </form>
+    <div style="height: 100px"></div>
+    <form action="http://localhost:3000/api/login" method="post" style="width: 200px">
+      <input name="email" class="form-control" type="email" placeholder="Email" required>
+      <input name="password" type="password" class="form-control" placeholder="Password" required>
+      <input type="submit" id="login" style="margin: auto; display: block;" class="btn btn-primary" value="Login">
+    </form>
+    <div style="height: 100px"></div>
+    <form action="http://localhost:3000/api/newpasswordrequest" method="post" style="width: 200px">
+      <input name="email" class="form-control" type="email" placeholder="Email" required>
+      <input type="submit" style="margin: auto; display: block;" class="btn btn-primary" value="Request Password">
+    </form>
+    <div style="height: 100px"></div>
+    <form action="http://localhost:3000/api/newpasswordlink" method="post" style="width: 200px">
+      <input name="old_password" class="form-control" type="password" placeholder="Old Password" required>
+      <input name="new_password" type="password" class="form-control" placeholder="New Password" required>
+      <input name="re_rew_password" type="password" class="form-control" placeholder="New Password" required>
+      <input type="submit" style="margin: auto; display: block;" class="btn btn-primary" value="Reset Password">
+    </form>
+  </div>
+  </body>
+  <script>
+    // Script to check if the two password entered match
+    let password = document.getElementById('password');
+    let re_password = document.getElementById('re_pwd');
+    let register = document.getElementById('register');
+
+    re_password.addEventListener('input', ()=>{
+      if (password.value !== re_password.value) {
+        password.style.borderColor = 'red';
+        re_password.style.borderColor = 'red';
+        register.disabled = true;
+      }else{
+        password.style.borderColor = 'green';
+        re_password.style.borderColor = 'green';
+        register.disabled = false;
+      }
+    })
+
+  </script>
+</html>
