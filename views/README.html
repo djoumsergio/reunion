@@ -17,34 +17,30 @@
 
   <body>
     <!-- <script src="js/main.js"></script> -->
+    <div id="warning-msg" style="text-align: center; widows: 100%; background-color: lightcoral; display: none"></div>
     <div style="width: 200px; margin: 80px auto;">
-    <form action="http://localhost:3000/api/registernewuser" method="post" style="width: 200px">
-      <input name="fname" class="form-control" type="text" placeholder="First name" required>
-      <input name="lname" class="form-control" type="text" placeholder="Last name" required>
-      <input name="email" class="form-control" type="email" placeholder="Email" required>
-      <input name="password" id="password" type="password" class="form-control" placeholder="Password" required>
-      <input id="re_pwd" type="password" class="form-control" placeholder="Re Password" required>
-      <input type="submit" id="register" style="margin: auto; display: block;" class="btn btn-primary" value="Register">
-    </form>
-    <div style="height: 100px"></div>
-    <form action="http://localhost:3000/api/login" method="post" style="width: 200px">
-      <input name="email" class="form-control" type="email" placeholder="Email" required>
-      <input name="password" type="password" class="form-control" placeholder="Password" required>
-      <input type="submit" id="login" style="margin: auto; display: block;" class="btn btn-primary" value="Login">
-    </form>
-    <div style="height: 100px"></div>
-    <form action="http://localhost:3000/api/newpasswordrequest" method="post" style="width: 200px">
-      <input name="email" class="form-control" type="email" placeholder="Email" required>
-      <input type="submit" style="margin: auto; display: block;" class="btn btn-primary" value="Request Password">
-    </form>
-    <div style="height: 100px"></div>
-    <form action="http://localhost:3000/api/newpasswordlink" method="post" style="width: 200px">
-      <input name="old_password" class="form-control" type="password" placeholder="Old Password" required>
-      <input name="new_password" type="password" class="form-control" placeholder="New Password" required>
-      <input name="re_rew_password" type="password" class="form-control" placeholder="New Password" required>
-      <input type="submit" style="margin: auto; display: block;" class="btn btn-primary" value="Reset Password">
-    </form>
-  </div>
+      
+      <form action="http://localhost:3000/api/registernewuser" method="post" style="width: 200px">
+        <input name="fname" class="form-control" type="text" placeholder="First name" required>
+        <input name="lname" class="form-control" type="text" placeholder="Last name" required>
+        <input name="email" class="form-control" type="email" placeholder="Email" required>
+        <input name="password" id="password" type="password" class="form-control" placeholder="Password" required>
+        <input id="re_pwd" type="password" class="form-control" placeholder="Re Password" required>
+        <input type="submit" id="register" style="margin: auto; display: block;" class="btn btn-primary" value="Register">
+      </form>
+      <div style="height: 100px"></div>
+      <form action="http://localhost:3000/api/login" method="post" style="width: 200px">
+        <input name="email" class="form-control" type="email" placeholder="Email" required>
+        <input name="password" type="password" class="form-control" placeholder="Password" required>
+        <input type="submit" id="login" style="margin: auto; display: block;" class="btn btn-primary" value="Login">
+      </form>
+      <div style="height: 100px"></div>
+      <form action="http://localhost:3000/api/newpasswordrequest" method="post" style="width: 200px">
+        <input name="email" class="form-control" type="email" placeholder="Email" required>
+        <input type="submit" style="margin: auto; display: block;" class="btn btn-primary" value="Request Password">
+      </form>
+      <div style="height: 100px"></div>
+    </div>
   </body>
   <script>
     // Script to check if the two password entered match
@@ -53,15 +49,39 @@
     let register = document.getElementById('register');
 
     re_password.addEventListener('input', ()=>{
+
+      //Check for identical input in the password and Re password field
       if (password.value !== re_password.value) {
         password.style.borderColor = 'red';
         re_password.style.borderColor = 'red';
         register.disabled = true;
+        document.getElementById('warning-msg').innerText = 'passwords dont match!'
+        document.getElementById('warning-msg').style.display = 'block';
+        setTimeout(()=>{
+          document.getElementById('warning-msg').style.display = 'none';
+        }, 500);
       }else{
         password.style.borderColor = 'green';
         re_password.style.borderColor = 'green';
         register.disabled = false;
       }
+
+      // Check for short passwords and should tell the user - should create a div to warn the user
+      if(password.value.length < 6){
+        password.style.borderColor = 'red';
+        re_password.style.borderColor = 'red';
+        register.disabled = true;
+        document.getElementById('warning-msg').innerText = 'Password too short'
+        document.getElementById('warning-msg').style.display = 'block';
+        setTimeout(()=>{
+          document.getElementById('warning-msg').style.display = 'none';
+        }, 2000);
+      }else{
+        password.style.borderColor = 'green';
+        re_password.style.borderColor = 'green';
+        register.disabled = false;
+      }
+
     })
 
   </script>

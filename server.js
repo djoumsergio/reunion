@@ -5,7 +5,7 @@ var registerNewUser = require('./routes/registernewuser');
 var validateUser = require('./routes/validateuser');
 var login = require('./routes/login');
 var newPasswordRequest = require('./routes/newpasswordrequest');
-var newPasswordLink = require('./routes/newpasswordlink');
+var newPassword = require('./routes/newpassword');
 const cors = require('cors');
 
 app.use(cors());
@@ -21,14 +21,15 @@ app.get('/register', (req, res) => {res.sendFile(__dirname + '/views/register.ht
 app.get('/404',  (req, res) => {res.sendFile(__dirname + '/views/pages/404.html')});
 app.get('/in', (req, res) => {res.sendFile(__dirname + '/views/dashboard/dashboard.html')});
 
-app.get('/testApp', (req, res) => {res.sendFile(__dirname + '/views/README.html')});
+app.get('/testApp', (req, res) => {res.sendFile(__dirname + '/views/README.html')});  // For testing purposes
+app.get('/api/newpasswordlink', (req, res) => {res.sendFile(__dirname + '/views/testresetpassword.html')}) // For testing purposes
 
 // From the routes folders
 app.use('/api/registernewuser', registerNewUser);
 app.use('/api/validateuser', validateUser);
 app.use('/api/login', login);
 app.use('/api/newpasswordrequest', newPasswordRequest);
-// app.use('/api/newpasswordlink', newPasswordLink); // Need to be well thought through
+app.use('/api/newpassword', newPassword);
 
 // Not found middleware - Display the 404 pages when status is 404
 app.use((req, res, next) => {

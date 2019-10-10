@@ -23,8 +23,14 @@ router.post('/', (req, res) => {
         
         // Checking if the user exists
         if(doc){
+
+            // Set the time the request is made to be able to check for expiration
+            User.findOneAndUpdate({email: email}, {$set: {reset_password_time: new Date(Date.now())}}, {new: true}, (err, doc) => {
+                if(err) return console.log(err);
+            })
+
             // Preparing to send the email confirmation after registration
-            let URL = `${API_URL}/api/newpasswordlink/?fname=${doc.fname}&lname=${doc.lname}&token=${doc.token}`;
+            let URL = `${API_URL}/api/newpasswordlink/?token=${doc.token}`;
             let text = `<div style="max-width: 400px; border: solid 1px #ccc; padding: 20px;margin-left: auto; margin-right: auto;box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24); border-radius: 10px;"><h2 style="text-align: center;">Nouveau Mot de Passe</h2><h4>Cher ${doc.fname},</h4><p style="padding-bottom: 15px;">Cliquez sur le bouton ci dessous pour créer un nouveau mot de passe.</p><p style="text-align: center;"><a style="border: solid 1px #ccc; padding: 12px; background-color: green; text-decoration: none; color: #fff; border-radius: 5px;" href=${URL}>Nouveau Mot de Passe</a></p><br/><br/></div>`;
 
             let transport = nodemailer.createTransport({

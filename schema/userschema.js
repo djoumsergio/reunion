@@ -11,6 +11,7 @@ var userSchema = new mongoose.Schema({
     token: String,
     token_expire: String,
     registration_time: String,
+    reset_password_time: Date,
     session:[{
       timestamp: Date,
       webbrowser: String,
