@@ -14,6 +14,7 @@ router.post('/', (req, res) => {
     let { email, password } = req.body;
     
     User.findOne({email: email}, (err, doc) => {
+        if(!doc) return res.send('This email does not exist');
         if(doc.use_account_status !=='valid') return res.send('please, validate your email address first');
         if(err) return console.log(err);
         
